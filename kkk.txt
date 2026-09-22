@@ -1,0 +1,756 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>WOF - Wall of Fame</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #fff1a8 0%,
+                    #d4a72c 25%,
+                    #8c6515 55%,
+                    #3d2905 100%
+                );
+
+            color: #241700;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            text-align: center;
+            padding: 45px 20px 30px;
+        }
+
+        .crown {
+            font-size: 90px;
+            line-height: 1;
+
+            filter:
+                drop-shadow(0 5px 5px rgba(0,0,0,0.4));
+
+            margin-bottom: 5px;
+        }
+
+        header h1 {
+            font-size: 62px;
+            letter-spacing: 7px;
+
+            color: #fff4b0;
+
+            text-shadow:
+                2px 2px 0 #6b4800,
+                0 0 10px #fff0a3,
+                0 0 25px #7a5200;
+        }
+
+        header h2 {
+            margin-top: 10px;
+
+            font-size: 19px;
+            letter-spacing: 6px;
+
+            color: #fff4c2;
+        }
+
+        header p {
+            margin-top: 15px;
+
+            color: #ffeaa0;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .search-box {
+            text-align: center;
+            margin: 10px auto 35px;
+        }
+
+        .search-box input {
+            width: 330px;
+            max-width: 90%;
+
+            padding: 14px 20px;
+
+            border-radius: 30px;
+            border: 2px solid #f5d76e;
+
+            background: rgba(44, 27, 0, 0.75);
+
+            color: white;
+
+            outline: none;
+
+            font-size: 15px;
+        }
+
+        .search-box input::placeholder {
+            color: #e8d48b;
+        }
+
+        /* =========================
+           MEMBERS GRID
+        ========================= */
+
+        .members {
+            width: 90%;
+            max-width: 1200px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(230px, 1fr));
+
+            gap: 25px;
+
+            padding-bottom: 60px;
+        }
+
+        /* =========================
+           MEMBER CARDS
+        ========================= */
+
+        .member-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255, 246, 190, 0.95),
+                    rgba(196, 145, 35, 0.95)
+                );
+
+            border: 3px solid #ffe98a;
+
+            border-radius: 22px;
+
+            padding: 15px;
+
+            text-align: center;
+
+            transition: 0.3s;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 20px rgba(0,0,0,0.35),
+                inset 0 0 15px rgba(255,255,255,0.4);
+        }
+
+        .member-card:hover {
+            transform:
+                translateY(-10px)
+                scale(1.03);
+
+            box-shadow:
+                0 15px 35px rgba(0,0,0,0.45),
+                0 0 25px #ffe68a;
+        }
+
+        /* =========================
+           MEMBER PICTURES
+        ========================= */
+
+        .member-picture {
+            width: 100%;
+            height: 230px;
+
+            border-radius: 16px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #5b3b00,
+                    #d5a52e,
+                    #fff0a0
+                );
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            margin-bottom: 15px;
+
+            border: 2px solid #fff0a3;
+
+            box-shadow:
+                inset 0 0 12px rgba(0,0,0,0.2);
+        }
+
+        /* ACTUAL PHOTOS */
+
+        .member-picture img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+
+            transition: 0.4s;
+        }
+
+        .member-card:hover .member-picture img {
+            transform: scale(1.06);
+        }
+
+        /* EMOJI PLACEHOLDERS */
+
+        .placeholder {
+            font-size: 60px;
+        }
+
+        /* =========================
+           NAMES
+        ========================= */
+
+        .member-card h3 {
+            font-size: 20px;
+
+            margin-bottom: 6px;
+
+            color: #382300;
+        }
+
+        .member-card p {
+            font-size: 11px;
+
+            color: #6a4a00;
+
+            letter-spacing: 3px;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            padding: 25px;
+
+            border-top: 2px solid #d6ae42;
+
+            color: #ffe99a;
+
+            font-size: 13px;
+
+            letter-spacing: 2px;
+        }
+
+        /* =========================
+           POPUP
+        ========================= */
+
+        .popup {
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(20, 12, 0, 0.85);
+
+            align-items: center;
+            justify-content: center;
+
+            z-index: 10;
+        }
+
+        .popup-content {
+            background:
+                linear-gradient(
+                    145deg,
+                    #fff0a3,
+                    #b8861b
+                );
+
+            border: 4px solid #fff1a3;
+
+            border-radius: 25px;
+
+            padding: 35px;
+
+            width: 350px;
+            max-width: 90%;
+
+            text-align: center;
+
+            box-shadow:
+                0 0 40px #ffe477,
+                0 15px 40px rgba(0,0,0,0.5);
+        }
+
+        .popup-content h2 {
+            margin-bottom: 10px;
+
+            font-size: 28px;
+        }
+
+        .popup-content p {
+            color: #5b3b00;
+        }
+
+        .close {
+            margin-top: 20px;
+
+            padding: 11px 28px;
+
+            border: 2px solid #ffe990;
+
+            border-radius: 25px;
+
+            background: #5b3b00;
+
+            color: #ffe99a;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .close:hover {
+            background: #2d1b00;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 38px;
+                letter-spacing: 4px;
+            }
+
+            header h2 {
+                font-size: 15px;
+                letter-spacing: 3px;
+            }
+
+            .crown {
+                font-size: 65px;
+            }
+
+            .members {
+                grid-template-columns: 1fr;
+                width: 92%;
+            }
+
+            .member-picture {
+                height: 300px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+        <div class="crown">👑</div>
+
+        <h1>WALL OF FAME</h1>
+
+        <h2>WOF MEMBERS</h2>
+
+        <p>THE OFFICIAL WALL OF FAME</p>
+
+    </header>
+
+
+    <!-- =========================
+         SEARCH
+    ========================= -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Search WOF members..."
+            onkeyup="searchMembers()"
+        >
+
+    </div>
+
+
+    <!-- =========================
+         MEMBERS
+    ========================= -->
+
+    <section class="members" id="memberList">
+
+        <!-- ROMAN -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Roman empire')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">👑</span>
+
+            </div>
+
+            <h3>Roman empire</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- KARA -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Kara suhana')"
+        >
+
+            <div class="member-picture">
+
+                <img
+                    src="download (5).jfif"
+                    alt="Kara suhana"
+                >
+
+            </div>
+
+            <h3>Kara suhana</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- VIOLET -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Violet dela')"
+        >
+
+            <div class="member-picture">
+
+                <img
+                    src="Bella Faith ⋆_ೃ࿔__･.jfif"
+                    alt="Violet dela"
+                >
+
+            </div>
+
+            <h3>Violet dela</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- SANTO -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Santo santorini')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">🌟</span>
+
+            </div>
+
+            <h3>Santo santorini</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- TATUM -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('tatum rosier')"
+        >
+
+            <div class="member-picture">
+
+                <img
+                    src="download (4).jfif"
+                    alt="tatum rosier"
+                >
+
+            </div>
+
+            <h3>tatum rosier</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- ELIO -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('elio rosier')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">🖤</span>
+
+            </div>
+
+            <h3>elio rosier</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- ZANE -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Zane rosier')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">⚡</span>
+
+            </div>
+
+            <h3>Zane rosier</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- KIARA -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Kiara hart')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">💫</span>
+
+            </div>
+
+            <h3>Kiara hart</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- AARON -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Aaron warner')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">🔥</span>
+
+            </div>
+
+            <h3>Aaron warner</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+        <!-- SARAH BERKSHIRE -->
+
+        <div
+            class="member-card"
+            onclick="openPopup('Sarah Berkshire')"
+        >
+
+            <div class="member-picture">
+
+                <span class="placeholder">💎</span>
+
+            </div>
+
+            <h3>Sarah Berkshire</h3>
+
+            <p>WOF MEMBER</p>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================= -->
+
+    <footer>
+
+        👑 WOF • WALL OF FAME • 2026 👑
+
+    </footer>
+
+
+    <!-- =========================
+         POPUP
+    ========================= -->
+
+    <div
+        class="popup"
+        id="popup"
+    >
+
+        <div class="popup-content">
+
+            <h2 id="popupName"></h2>
+
+            <p>Official WOF Member ✦</p>
+
+            <button
+                class="close"
+                onclick="closePopup()"
+            >
+                CLOSE
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        /* SEARCH MEMBERS */
+
+        function searchMembers() {
+
+            let search =
+                document
+                .getElementById("search")
+                .value
+                .toLowerCase();
+
+            let cards =
+                document
+                .querySelectorAll(".member-card");
+
+
+            cards.forEach(function(card) {
+
+                let name =
+                    card
+                    .querySelector("h3")
+                    .textContent
+                    .toLowerCase();
+
+
+                if (name.includes(search)) {
+
+                    card.style.display = "block";
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+
+        /* OPEN POPUP */
+
+        function openPopup(name) {
+
+            document
+                .getElementById("popupName")
+                .textContent = name;
+
+            document
+                .getElementById("popup")
+                .style.display = "flex";
+
+        }
+
+
+        /* CLOSE POPUP */
+
+        function closePopup() {
+
+            document
+                .getElementById("popup")
+                .style.display = "none";
+
+        }
+
+
+        /* CLOSE POPUP WHEN CLICKING OUTSIDE */
+
+        document
+            .getElementById("popup")
+            .addEventListener("click", function(event) {
+
+                if (event.target === this) {
+
+                    closePopup();
+
+                }
+
+            });
+
+    </script>
+
+</body>
+</html>
